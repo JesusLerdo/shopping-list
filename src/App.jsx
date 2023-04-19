@@ -28,8 +28,48 @@ function App() {
     },
   ]);
 
-  const handleNewListItemButton = () => {
-    Swal.fire('Any fool can USE a computer')
+  const handleNewListItemButton = async () => {
+    const {value} = await Swal.fire({
+      title: "New item information",
+      html: `<input 
+              type="text"
+              id="name" 
+              name="name" 
+              class="swal2-input"
+               placeholder="Item" 
+              />
+              <input type="number" 
+              id="quantity"
+              name="quantity" 
+              class="swal2-input" 
+              placeholder="Qt" 
+              />
+             <input 
+             type="text" 
+             id="unit" 
+             name="unit"
+             class="swal2-input"
+             placeholder="Unit"
+              />`,
+      confirmButtonText: "Add item",
+      showCloseButton: true,
+      showCancelButton: true,
+      focusConfirm: false,
+      cancelButtonText: "Dismiss",
+      preConfirm: () => {
+        const name = Swal.getPopup().querySelector('#name').value;
+        const quantity = Swal.getPopup().querySelector('#quantity').value;
+        const unit = Swal.getPopup().querySelector('#unit').value;
+        if (!name || !quantity || !unit){
+          Swal.showValidationMessage('Please enter an item name');
+        }
+        return {name, quantity, unit};
+      },
+    })
+    setListItems([
+      ...listItems,
+      {id: (listItems.length + 1).toString(), ...value, checked: false}
+    ]);
   }
 
   const handleCheckboxChange = (e) => {
